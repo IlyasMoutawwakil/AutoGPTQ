@@ -37,7 +37,8 @@ common_setup_kwargs = {
 
 PYPI_RELEASE = os.environ.get('PYPI_RELEASE', None)
 BUILD_CUDA_EXT = int(os.environ.get('BUILD_CUDA_EXT', '1')) == 1
-DISABLE_QIGEN = int(os.environ.get('DISABLE_QIGEN', '0')) == 1
+DISABLE_OLD_CUDA = int(os.environ.get('DISABLE_OLD_CUDA', '0')) == 1 or True
+DISABLE_QIGEN = int(os.environ.get('DISABLE_QIGEN', '0')) == 1 or True
 
 if BUILD_CUDA_EXT:
     try:
@@ -110,7 +111,7 @@ if BUILD_CUDA_EXT:
         except subprocess.CalledProcessError as e:
             raise Exception(f"Generating QiGen kernels failed with the error shown above.")
 
-    if not ROCM_VERSION:
+    if not ROCM_VERSION and not DISABLE_OLD_CUDA:
         from distutils.sysconfig import get_python_lib
         conda_cuda_include_dir = os.path.join(get_python_lib(), "nvidia/cuda_runtime/include")
 
